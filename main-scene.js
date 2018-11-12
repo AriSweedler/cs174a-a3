@@ -1,3 +1,5 @@
+const xAxis = Vec.of( 1,0,0 );
+const yAxis = Vec.of( 0,1,0 );
 
 window.Assignment_Three_Scene = window.classes.Assignment_Three_Scene = class Assignment_Three_Scene extends Scene_Component
 {
@@ -35,14 +37,23 @@ window.Assignment_Three_Scene = window.classes.Assignment_Three_Scene = class As
 
     /* TODO:  Create any variables that needs to be remembered from frame to
      * frame, such as for incremental movements over time. */
-     this.box = {};
-     this.box_2 = {};
+     this.cube_rotation = true;
+     this.box = {
+       transform: Mat4.identity().times( Mat4.translation([-2, 0, -5]) ),
+       rpm: 30,
+       rad: (dt) => this.cube_rotation ? 2*Math.PI*dt*(this.box.rpm/60) : 0,
+     };
+     this.box_2 = {
+       transform: Mat4.identity().times( Mat4.translation([2, 0, -5]) ),
+       rpm: 20,
+       rad: (dt) => this.cube_rotation ? 2*Math.PI*dt*(this.box_2.rpm/60) : 0,
+     };
   }
 
   make_control_panel()
   {
-    /* TODO:  Implement requirement #5 using a key_triggered_button that responds
-     * to the 'c' key. */
+    this.key_triggered_button( "Cube rotation",  [ "c" ], () => this.cube_rotation = !this.cube_rotation );
+    this.new_line();
   }
 
   display( graphics_state )
@@ -52,13 +63,13 @@ window.Assignment_Three_Scene = window.classes.Assignment_Three_Scene = class As
     const t = graphics_state.animation_time / 1000, dt = graphics_state.animation_delta_time / 1000;
 
     /* box 1 */
-    this.box.transform = Mat4.identity()
-      .times( Mat4.translation([-2, 0, -5]) );
+    this.box.transform = this.box.transform
+      .times( Mat4.rotation(this.box.rad(dt), xAxis) );
     this.shapes.box.draw( graphics_state, this.box.transform, this.materials.pic_cap );
 
     /* box 2 */
-    this.box_2.transform = Mat4.identity()
-      .times( Mat4.translation([2, 0, -5]) );
+    this.box_2.transform = this.box_2.transform
+      .times( Mat4.rotation(this.box_2.rad(dt), yAxis) );
     this.shapes.box_2.draw( graphics_state, this.box_2.transform, this.materials.pic_iron );
   }
 }
