@@ -29,8 +29,8 @@ window.Assignment_Three_Scene = window.classes.Assignment_Three_Scene = class As
      * 7 you will need different ones.*/
     this.materials = {
       phong: context.get_instance( Phong_Shader ).material( Color.of( 1,1,0,1 ) ),
-      box_1: context.get_instance( Texture_Scroll_X ).material( Color.of( 0,0,0,1 ), {ambient: 1, specularity: 0, texture: context.get_instance( "assets/cap.png", false )} ),
-      box_2: context.get_instance( Phong_Shader ).material( Color.of( 0,0,0,1 ), {ambient: 1, specularity: 0, texture: context.get_instance( "assets/iron.png", true )} ),
+      box_1: context.get_instance( Texture_Rotate ).material( Color.of( 0,0,0,1 ), {ambient: 1, specularity: 0, texture: context.get_instance( "assets/cap.png", false )} ),
+      box_2: context.get_instance( Texture_Scroll_X  ).material( Color.of( 0,0,0,1 ), {ambient: 1, specularity: 0, texture: context.get_instance( "assets/iron.png", true )} ),
     };
 
     this.lights = [ new Light( Vec.of( -5,5,5,1 ), Color.of( 0,1,1,1 ), 100000 ) ];
@@ -98,7 +98,10 @@ class Texture_Scroll_X extends Phong_Shader
 
         /* Sample the texture image in the correct place. Compute an initial
          * (ambient) color: */
-        vec4 tex_color = texture2D( texture, f_tex_coord );
+        /* move the texture left by 2 texture units per second. Use
+         * animation_time. Don't let tex_color.x get too big, cuz floats lose
+         * precision away from 0.0 */
+        vec4 tex_color = texture2D( texture, vec2(f_tex_coord.x+(mod(animation_time, 8.0)*2.0), f_tex_coord.y) );
 
         if ( USE_TEXTURE ) {
           gl_FragColor = vec4( ( tex_color.xyz + shapeColor.xyz ) * ambient, shapeColor.w * tex_color.w );
