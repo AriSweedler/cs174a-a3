@@ -16,7 +16,7 @@ window.Assignment_Three_Scene = window.classes.Assignment_Three_Scene = class As
     context.globals.graphics_state.projection_transform = Mat4.perspective( Math.PI/4, r, .1, 1000 );
 
     const shapes = {
-      box:   new Cube(),
+      box_1:   new Cube(),
       box_2: new Cube(),
       axis:  new Axis_Arrows()
     }
@@ -29,8 +29,8 @@ window.Assignment_Three_Scene = window.classes.Assignment_Three_Scene = class As
      * 7 you will need different ones.*/
     this.materials = {
       phong: context.get_instance( Phong_Shader ).material( Color.of( 1,1,0,1 ) ),
-      pic_cap: context.get_instance( Phong_Shader ).material( Color.of( 0,0,0,1 ), {ambient: 1, specularity: 0, texture: context.get_instance( "assets/cap.png", false )} ),
-      pic_iron: context.get_instance( Phong_Shader ).material( Color.of( 0,0,0,1 ), {ambient: 1, specularity: 0, texture: context.get_instance( "assets/iron.png", true )} ),
+      box_1: context.get_instance( Phong_Shader ).material( Color.of( 0,0,0,1 ), {ambient: 1, specularity: 0, texture: context.get_instance( "assets/cap.png", false )} ),
+      box_2: context.get_instance( Phong_Shader ).material( Color.of( 0,0,0,1 ), {ambient: 1, specularity: 0, texture: context.get_instance( "assets/iron.png", true )} ),
     };
 
     this.lights = [ new Light( Vec.of( -5,5,5,1 ), Color.of( 0,1,1,1 ), 100000 ) ];
@@ -38,10 +38,10 @@ window.Assignment_Three_Scene = window.classes.Assignment_Three_Scene = class As
     /* TODO:  Create any variables that needs to be remembered from frame to
      * frame, such as for incremental movements over time. */
      this.cube_rotation = true;
-     this.box = {
+     this.box_1 = {
        transform: Mat4.identity().times( Mat4.translation([-2, 0, -5]) ),
        rpm: 30,
-       rad: (dt) => this.cube_rotation ? 2*Math.PI*dt*(this.box.rpm/60) : 0,
+       rad: (dt) => this.cube_rotation ? 2*Math.PI*dt*(this.box_1.rpm/60) : 0,
      };
      this.box_2 = {
        transform: Mat4.identity().times( Mat4.translation([2, 0, -5]) ),
@@ -62,15 +62,15 @@ window.Assignment_Three_Scene = window.classes.Assignment_Three_Scene = class As
     graphics_state.lights = this.lights;
     const t = graphics_state.animation_time / 1000, dt = graphics_state.animation_delta_time / 1000;
 
-    /* box 1 */
-    this.box.transform = this.box.transform
-      .times( Mat4.rotation(this.box.rad(dt), xAxis) );
-    this.shapes.box.draw( graphics_state, this.box.transform, this.materials.pic_cap );
+    /* box_1 */
+    this.box_1.transform = this.box_1.transform
+      .times( Mat4.rotation(this.box_1.rad(dt), xAxis) );
+    this.shapes.box_1.draw( graphics_state, this.box_1.transform, this.materials.box_1 );
 
-    /* box 2 */
+    /* box_2 */
     this.box_2.transform = this.box_2.transform
       .times( Mat4.rotation(this.box_2.rad(dt), yAxis) );
-    this.shapes.box_2.draw( graphics_state, this.box_2.transform, this.materials.pic_iron );
+    this.shapes.box_2.draw( graphics_state, this.box_2.transform, this.materials.box_2 );
   }
 }
 
