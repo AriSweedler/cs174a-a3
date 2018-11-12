@@ -1,5 +1,4 @@
-/* The scene begins by requesting the camera, shapes, and materials it will
- * need. First, include a secondary Scene that provides movement controls: */
+
 window.Assignment_Three_Scene = window.classes.Assignment_Three_Scene = class Assignment_Three_Scene extends Scene_Component
 {
   constructor( context, control_box )
@@ -14,16 +13,12 @@ window.Assignment_Three_Scene = window.classes.Assignment_Three_Scene = class As
     const r = context.width/context.height;
     context.globals.graphics_state.projection_transform = Mat4.perspective( Math.PI/4, r, .1, 1000 );
 
-    /* TODO:  Create two cubes, including one with the default texture
-     * coordinates (from 0 to 1), and one with the modified texture coordinates
-     * as required for cube #2.  You can either do this by modifying the cube
-     * code or by modifying a cube instance's texture_coords after it is
-     * already created. */
     const shapes = {
       box:   new Cube(),
       box_2: new Cube(),
       axis:  new Axis_Arrows()
     }
+    shapes.box_2.texture_coords = shapes.box_2.texture_coords.map( v => Vec.of(v[0]*2, v[1]*2) );
     this.submit_shapes( context, shapes );
 
     /* TODO:  Create the materials required to texture both cubes with the
@@ -31,13 +26,17 @@ window.Assignment_Three_Scene = window.classes.Assignment_Three_Scene = class As
      * Phong_Shader will work initially, but when you get to requirements 6 and
      * 7 you will need different ones.*/
     this.materials = {
-      phong: context.get_instance( Phong_Shader ).material( Color.of( 1,1,0,1 ) )
+      phong: context.get_instance( Phong_Shader ).material( Color.of( 1,1,0,1 ) ),
+      pic_cap: context.get_instance( Phong_Shader ).material( Color.of( 0,0,0,1 ), {ambient: 1, specularity: 0, texture: context.get_instance( "assets/cap.png", false )} ),
+      pic_iron: context.get_instance( Phong_Shader ).material( Color.of( 0,0,0,1 ), {ambient: 1, specularity: 0, texture: context.get_instance( "assets/iron.png", true )} ),
     };
 
     this.lights = [ new Light( Vec.of( -5,5,5,1 ), Color.of( 0,1,1,1 ), 100000 ) ];
 
     /* TODO:  Create any variables that needs to be remembered from frame to
      * frame, such as for incremental movements over time. */
+     this.box = {};
+     this.box_2 = {};
   }
 
   make_control_panel()
@@ -52,8 +51,15 @@ window.Assignment_Three_Scene = window.classes.Assignment_Three_Scene = class As
     graphics_state.lights = this.lights;
     const t = graphics_state.animation_time / 1000, dt = graphics_state.animation_delta_time / 1000;
 
-    /* TODO:  Draw the required boxes. Also update their stored matrices. */
-    this.shapes.axis.draw( graphics_state, Mat4.identity(), this.materials.phong );
+    /* box 1 */
+    this.box.transform = Mat4.identity()
+      .times( Mat4.translation([-2, 0, -5]) );
+    this.shapes.box.draw( graphics_state, this.box.transform, this.materials.pic_cap );
+
+    /* box 2 */
+    this.box_2.transform = Mat4.identity()
+      .times( Mat4.translation([2, 0, -5]) );
+    this.shapes.box_2.draw( graphics_state, this.box_2.transform, this.materials.pic_iron );
   }
 }
 
