@@ -3,14 +3,14 @@ class Triangle extends Shape    // The simplest possible Shape – one triangle.
 { constructor()                 // having their own 3D position, normal vector, and texture-space coordinate.
     { super( "positions", "normals", "texture_coords" );                       // Name the values we'll define per each vertex.
                                   // First, specify the vertex positions -- the three point locations of an imaginary triangle.
-                                  // Next, supply vectors that point away from the triangle face.  They should match up with the points in 
-                                  // the above list.  Normal vectors are needed so the graphics engine can know if the shape is pointed at 
+                                  // Next, supply vectors that point away from the triangle face.  They should match up with the points in
+                                  // the above list.  Normal vectors are needed so the graphics engine can know if the shape is pointed at
                                   // light or not, and color it accordingly.  lastly, put each point somewhere in texture space too.
       this.positions      = [ Vec.of(0,0,0), Vec.of(1,0,0), Vec.of(0,1,0) ];
       this.normals        = [ Vec.of(0,0,1), Vec.of(0,0,1), Vec.of(0,0,1) ];
-      this.texture_coords = [ Vec.of(0,0),   Vec.of(1,0),   Vec.of(0,1)   ]; 
+      this.texture_coords = [ Vec.of(0,0),   Vec.of(1,0),   Vec.of(0,1)   ];
       this.indices        = [ 0, 1, 2 ];                         // Index into our vertices to connect them into a whole triangle.
-                 // A position, normal, and texture coord fully describes one "vertex".  What's the "i"th vertex?  Simply the combined data 
+                 // A position, normal, and texture coord fully describes one "vertex".  What's the "i"th vertex?  Simply the combined data
                  // you get if you look up index "i" of those lists above -- a position, normal vector, and tex coord together.  Lastly we
                  // told it how to connect vertex entries into triangles.  Every three indices in "this.indices" traces out one triangle.
     }
@@ -18,9 +18,9 @@ class Triangle extends Shape    // The simplest possible Shape – one triangle.
 
 
 window.Square = window.classes.Square =
-class Square extends Shape              // A square, demonstrating two triangles that share vertices.  On any planar surface, the interior 
+class Square extends Shape              // A square, demonstrating two triangles that share vertices.  On any planar surface, the interior
                                         // edges don't make any important seams.  In these cases there's no reason not to re-use data of
-{                                       // the common vertices between triangles.  This makes all the vertex arrays (position, normals, 
+{                                       // the common vertices between triangles.  This makes all the vertex arrays (position, normals,
   constructor()                         // etc) smaller and more cache friendly.
     { super( "positions", "normals", "texture_coords" );                                   // Name the values we'll define per each vertex.
       this.positions     .push( ...Vec.cast( [-1,-1,0], [1,-1,0], [-1,1,0], [1,1,0] ) );   // Specify the 4 square corner locations.
@@ -32,19 +32,19 @@ class Square extends Shape              // A square, demonstrating two triangles
 
 
 window.Tetrahedron = window.classes.Tetrahedron =
-class Tetrahedron extends Shape                       // The Tetrahedron shape demonstrates flat vs smooth shading (a boolean argument 
+class Tetrahedron extends Shape                       // The Tetrahedron shape demonstrates flat vs smooth shading (a boolean argument
 { constructor( using_flat_shading )                   // selects which one).  It is also our first 3D, non-planar shape.
     { super( "positions", "normals", "texture_coords" );
       var a = 1/Math.sqrt(3);
       if( !using_flat_shading )                                 // Method 1:  A tetrahedron with shared vertices.  Compact, performs better,
       {                                                         // but can't produce flat shading or discontinuous seams in textures.
-          this.positions     .push( ...Vec.cast( [ 0, 0, 0], [1,0,0], [0,1,0], [0,0,1] ) );          
-          this.normals       .push( ...Vec.cast( [-a,-a,-a], [1,0,0], [0,1,0], [0,0,1] ) );          
+          this.positions     .push( ...Vec.cast( [ 0, 0, 0], [1,0,0], [0,1,0], [0,0,1] ) );
+          this.normals       .push( ...Vec.cast( [-a,-a,-a], [1,0,0], [0,1,0], [0,0,1] ) );
           this.texture_coords.push( ...Vec.cast( [ 0, 0   ], [1,0  ], [0,1, ], [1,1  ] ) );
           this.indices       .push( 0, 1, 2,   0, 1, 3,   0, 2, 3,    1, 2, 3 );  // Vertices are shared multiple times with this method.
       }
       else
-      { this.positions     .push( ...Vec.cast( [0,0,0], [1,0,0], [0,1,0],         // Method 2:  A tetrahedron with 
+      { this.positions     .push( ...Vec.cast( [0,0,0], [1,0,0], [0,1,0],         // Method 2:  A tetrahedron with
                                                [0,0,0], [1,0,0], [0,0,1],         // four independent triangles.
                                                [0,0,0], [0,1,0], [0,0,1],
                                                [0,0,1], [1,0,0], [0,1,0] ) );
@@ -77,11 +77,11 @@ class Windmill extends Shape                     // Windmill Shape.  As our shap
                                newPoint.plus( [ 0,1,0 ] ),         // Store it again but with higher y coord:  This is point 2.
                                         Vec.of( 0,0,0 )    );      // All triangles touch this location.       This is point 3.
 
-                        // Rotate our base triangle's normal (0,0,1) to get the new one.  Careful!  Normal vectors are not points; 
+                        // Rotate our base triangle's normal (0,0,1) to get the new one.  Careful!  Normal vectors are not points;
                         // their perpendicularity constraint gives them a mathematical quirk that when applying matrices you have
-                        // to apply the transposed inverse of that matrix instead.  But right now we've got a pure rotation matrix, 
+                        // to apply the transposed inverse of that matrix instead.  But right now we've got a pure rotation matrix,
                         // where the inverse and transpose operations cancel out.
-          var newNormal = spin.times( Vec.of( 0,0,1 ).to4(0) ).to3();  
+          var newNormal = spin.times( Vec.of( 0,0,1 ).to4(0) ).to3();
           this.normals       .push( newNormal, newNormal, newNormal          );
           this.texture_coords.push( ...Vec.cast( [ 0,0 ], [ 0,1 ], [ 1,0 ] ) );
           this.indices       .push( 3*i, 3*i + 1, 3*i + 2                    ); // Procedurally connect the 3 new vertices into triangles.
@@ -91,9 +91,9 @@ class Windmill extends Shape                     // Windmill Shape.  As our shap
 
 window.Cube = window.classes.Cube =
 class Cube extends Shape    // A cube inserts six square strips into its arrays.
-{ constructor()  
+{ constructor()
     { super( "positions", "normals", "texture_coords" );
-      for( var i = 0; i < 3; i++ )                    
+      for( var i = 0; i < 3; i++ )
         for( var j = 0; j < 2; j++ )
         { var square_transform = Mat4.rotation( i == 0 ? Math.PI/2 : 0, Vec.of(1, 0, 0) )
                          .times( Mat4.rotation( Math.PI * j - ( i == 1 ? Math.PI/2 : 0 ), Vec.of( 0, 1, 0 ) ) )
@@ -112,7 +112,7 @@ class Line_Segment_Array extends Shape    // Plot 2D points.
   set_data( origins, destinations, colors, gl = this.gl )      // Provide two lists of points (each pair will be connected into a segment),
     { this.positions = [];                                     // plus a list of enough colors for each of those two points per segment.
       for( let [i] of origins.entries() )
-      { this.positions[ 2*i     ] = origins[i];  
+      { this.positions[ 2*i     ] = origins[i];
         this.positions[ 2*i + 1 ] = destinations[i];
       }
       this.colors = colors;
@@ -124,41 +124,41 @@ class Line_Segment_Array extends Shape    // Plot 2D points.
 
 window.Subdivision_Sphere = window.classes.Subdivision_Sphere =
 class Subdivision_Sphere extends Shape  // This Shape defines a Sphere surface, with nice uniform triangles.  A subdivision surface (see
-{                                       // Wikipedia article on those) is initially simple, then builds itself into a more and more 
-                                        // detailed shape of the same layout.  Each act of subdivision makes it a better approximation of 
-                                        // some desired mathematical surface by projecting each new point onto that surface's known 
+{                                       // Wikipedia article on those) is initially simple, then builds itself into a more and more
+                                        // detailed shape of the same layout.  Each act of subdivision makes it a better approximation of
+                                        // some desired mathematical surface by projecting each new point onto that surface's known
                                         // implicit equation.  For a sphere, we begin with a closed 3-simplex (a tetrahedron).  For each
-                                        // face, connect the midpoints of each edge together to make more faces.  Repeat recursively until 
-                                        // the desired level of detail is obtained.  Project all new vertices to unit vectors (onto the                                         
+                                        // face, connect the midpoints of each edge together to make more faces.  Repeat recursively until
+                                        // the desired level of detail is obtained.  Project all new vertices to unit vectors (onto the
   constructor( max_subdivisions )       // unit sphere) and group them into triangles by following the predictable pattern of the recursion.
     { super( "positions", "normals", "texture_coords" );                      // Start from the following equilateral tetrahedron:
       this.positions.push( ...Vec.cast( [ 0, 0, -1 ], [ 0, .9428, .3333 ], [ -.8165, -.4714, .3333 ], [ .8165, -.4714, .3333 ] ) );
-      
+
       this.subdivideTriangle( 0, 1, 2, max_subdivisions);  // Begin recursion.
       this.subdivideTriangle( 3, 2, 1, max_subdivisions);
       this.subdivideTriangle( 1, 0, 3, max_subdivisions);
-      this.subdivideTriangle( 0, 2, 3, max_subdivisions); 
-      
+      this.subdivideTriangle( 0, 2, 3, max_subdivisions);
+
       for( let p of this.positions )
         { this.normals.push( p.copy() );                 // Each point has a normal vector that simply goes to the point from the origin.
 
-                                                         // Textures are tricky.  A Subdivision sphere has no straight seams to which image 
-                                                         // edges in UV space can be mapped.  The only way to avoid artifacts is to smoothly                                                          
+                                                         // Textures are tricky.  A Subdivision sphere has no straight seams to which image
+                                                         // edges in UV space can be mapped.  The only way to avoid artifacts is to smoothly
           this.texture_coords.push(                      // wrap & unwrap the image in reverse - displaying the texture twice on the sphere.
                                  Vec.of( Math.asin( p[0]/Math.PI ) + .5, Math.asin( p[1]/Math.PI ) + .5 ) ) }
     }
   subdivideTriangle( a, b, c, count )   // Recurse through each level of detail by splitting triangle (a,b,c) into four smaller ones.
-    { 
+    {
       if( count <= 0) { this.indices.push(a,b,c); return; }  // Base case of recursion - we've hit the finest level of detail we want.
-                  
+
       var ab_vert = this.positions[a].mix( this.positions[b], 0.5).normalized(),     // We're not at the base case.  So, build 3 new
           ac_vert = this.positions[a].mix( this.positions[c], 0.5).normalized(),     // vertices at midpoints, and extrude them out to
           bc_vert = this.positions[b].mix( this.positions[c], 0.5).normalized();     // touch the unit sphere (length 1).
-            
+
       var ab = this.positions.push( ab_vert ) - 1,      // Here, push() returns the indices of the three new vertices (plus one).
-          ac = this.positions.push( ac_vert ) - 1,  
-          bc = this.positions.push( bc_vert ) - 1;  
-      
+          ac = this.positions.push( ac_vert ) - 1,
+          bc = this.positions.push( bc_vert ) - 1;
+
       this.subdivideTriangle( a, ab, ac,  count - 1 );          // Recurse on four smaller triangles, and we're done.  Skipping every
       this.subdivideTriangle( ab, b, bc,  count - 1 );          // fourth vertex index in our list takes you down one level of detail,
       this.subdivideTriangle( ac, bc, c,  count - 1 );          // and so on, due to the way we're building it.
@@ -174,43 +174,43 @@ class Grid_Patch extends Shape              // A grid of rows and columns you ca
   constructor( rows, columns, next_row_function, next_column_function, texture_coord_range = [ [ 0, rows ], [ 0, columns ] ]  )
     { super( "positions", "normals", "texture_coords" );
       let points = [];
-      for( let r = 0; r <= rows; r++ ) 
+      for( let r = 0; r <= rows; r++ )
       { points.push( new Array( columns+1 ) );                                                    // Allocate a 2D array.
                                              // Use next_row_function to generate the start point of each row. Pass in the progress ratio,
-        points[ r ][ 0 ] = next_row_function( r/rows, points[ r-1 ] && points[ r-1 ][ 0 ] );      // and the previous point if it existed.                                                                                                  
+        points[ r ][ 0 ] = next_row_function( r/rows, points[ r-1 ] && points[ r-1 ][ 0 ] );      // and the previous point if it existed.
       }
       for(   let r = 0; r <= rows;    r++ )               // From those, use next_column function to generate the remaining points:
         for( let c = 0; c <= columns; c++ )
         { if( c > 0 ) points[r][ c ] = next_column_function( c/columns, points[r][ c-1 ], r/rows );
-      
-          this.positions.push( points[r][ c ] );        
+
+          this.positions.push( points[r][ c ] );
                                                                                       // Interpolate texture coords from a provided range.
           const a1 = c/columns, a2 = r/rows, x_range = texture_coord_range[0], y_range = texture_coord_range[1];
           this.texture_coords.push( Vec.of( ( a1 )*x_range[1] + ( 1-a1 )*x_range[0], ( a2 )*y_range[1] + ( 1-a2 )*y_range[0] ) );
         }
       for(   let r = 0; r <= rows;    r++ )            // Generate normals by averaging the cross products of all defined neighbor pairs.
         for( let c = 0; c <= columns; c++ )
-        { let curr = points[r][c], neighbors = new Array(4), normal = Vec.of( 0,0,0 );          
+        { let curr = points[r][c], neighbors = new Array(4), normal = Vec.of( 0,0,0 );
           for( let [ i, dir ] of [ [ -1,0 ], [ 0,1 ], [ 1,0 ], [ 0,-1 ] ].entries() )         // Store each neighbor by rotational order.
             neighbors[i] = points[ r + dir[1] ] && points[ r + dir[1] ][ c + dir[0] ];        // Leave "undefined" in the array wherever
                                                                                               // we hit a boundary.
           for( let i = 0; i < 4; i++ )                                          // Take cross-products of pairs of neighbors, proceeding
             if( neighbors[i] && neighbors[ (i+1)%4 ] )                          // a consistent rotational direction through the pairs:
-              normal = normal.plus( neighbors[i].minus( curr ).cross( neighbors[ (i+1)%4 ].minus( curr ) ) );          
+              normal = normal.plus( neighbors[i].minus( curr ).cross( neighbors[ (i+1)%4 ].minus( curr ) ) );
           normal.normalize();                                                              // Normalize the sum to get the average vector.
                                                      // Store the normal if it's valid (not NaN or zero length), otherwise use a default:
-          if( normal.every( x => x == x ) && normal.norm() > .01 )  this.normals.push( Vec.from( normal ) );    
+          if( normal.every( x => x == x ) && normal.norm() > .01 )  this.normals.push( Vec.from( normal ) );
           else                                                      this.normals.push( Vec.of( 0,0,1 )    );
-        }   
-        
-      for( var h = 0; h < rows; h++ )             // Generate a sequence like this (if #columns is 10):  
-        for( var i = 0; i < 2 * columns; i++ )    // "1 11 0  11 1 12  2 12 1  12 2 13  3 13 2  13 3 14  4 14 3..." 
+        }
+
+      for( var h = 0; h < rows; h++ )             // Generate a sequence like this (if #columns is 10):
+        for( var i = 0; i < 2 * columns; i++ )    // "1 11 0  11 1 12  2 12 1  12 2 13  3 13 2  13 3 14  4 14 3..."
           for( var j = 0; j < 3; j++ )
-            this.indices.push( h * ( columns + 1 ) + columns * ( ( i + ( j % 2 ) ) % 2 ) + ( ~~( ( j % 3 ) / 2 ) ? 
+            this.indices.push( h * ( columns + 1 ) + columns * ( ( i + ( j % 2 ) ) % 2 ) + ( ~~( ( j % 3 ) / 2 ) ?
                                    ( ~~( i / 2 ) + 2 * ( i % 2 ) )  :  ( ~~( i / 2 ) + 1 ) ) );
     }
   static sample_array( array, ratio )                 // Optional but sometimes useful as a next row or column operation. In a given array
-    {                                                 // of points, intepolate the pair of points that our progress ratio falls between.  
+    {                                                 // of points, intepolate the pair of points that our progress ratio falls between.
       const frac = ratio * ( array.length - 1 ), alpha = frac - Math.floor( frac );
       return array[ Math.floor( frac ) ].mix( array[ Math.ceil( frac ) ], alpha );
     }
@@ -218,26 +218,26 @@ class Grid_Patch extends Shape              // A grid of rows and columns you ca
 
 window.Surface_Of_Revolution = window.classes.Surface_Of_Revolution =
 class Surface_Of_Revolution extends Grid_Patch      // SURFACE OF REVOLUTION: Produce a curved "sheet" of triangles with rows and columns.
-                                                    // Begin with an input array of points, defining a 1D path curving through 3D space -- 
-                                                    // now let each such point be a row.  Sweep that whole curve around the Z axis in equal 
+                                                    // Begin with an input array of points, defining a 1D path curving through 3D space --
+                                                    // now let each such point be a row.  Sweep that whole curve around the Z axis in equal
                                                     // steps, stopping and storing new points along the way; let each step be a column. Now
                                                     // we have a flexible "generalized cylinder" spanning an area until total_curvature_angle.
 { constructor( rows, columns, points, texture_coord_range, total_curvature_angle = 2*Math.PI )
     { const row_operation =     i => Grid_Patch.sample_array( points, i ),
          column_operation = (j,p) => Mat4.rotation( total_curvature_angle/columns, Vec.of( 0,0,1 ) ).times(p.to4(1)).to3();
-         
+
        super( rows, columns, row_operation, column_operation, texture_coord_range );
     }
 }
 
 window.Regular_2D_Polygon = window.classes.Regular_2D_Polygon =
 class Regular_2D_Polygon extends Surface_Of_Revolution  // Approximates a flat disk / circle
-  { constructor( rows, columns ) { super( rows, columns, Vec.cast( [0, 0, 0], [1, 0, 0] ) ); 
+  { constructor( rows, columns ) { super( rows, columns, Vec.cast( [0, 0, 0], [1, 0, 0] ) );
                                    this.normals = this.normals.map( x => Vec.of( 0,0,1 ) );
                                    this.texture_coords.forEach( (x, i, a) => a[i] = this.positions[i].map( x => x/2 + .5 ).slice(0,2) ); } }
 
 window.Cylindrical_Tube = window.classes.Cylindrical_Tube =
-class Cylindrical_Tube extends Surface_Of_Revolution    // An open tube shape with equally sized sections, pointing down Z locally.    
+class Cylindrical_Tube extends Surface_Of_Revolution    // An open tube shape with equally sized sections, pointing down Z locally.
   { constructor( rows, columns, texture_range ) { super( rows, columns, Vec.cast( [1, 0, .5], [1, 0, -.5] ), texture_range ); } }
 
 window.Cone_Tip = window.classes.Cone_Tip =
@@ -246,23 +246,23 @@ class Cone_Tip extends Surface_Of_Revolution        // Note:  Touches the Z axis
 
 window.Torus = window.classes.Torus =
 class Torus extends Shape                                         // Build a donut shape.  An example of a surface of revolution.
-  { constructor( rows, columns )  
+  { constructor( rows, columns )
       { super( "positions", "normals", "texture_coords" );
         const circle_points = Array( rows ).fill( Vec.of( .75,0,0 ) )
                                            .map( (p,i,a) => Mat4.translation([ -2,0,0 ])
                                                     .times( Mat4.rotation( i/(a.length-1) * 2*Math.PI, Vec.of( 0,-1,0 ) ) )
                                                     .times( p.to4(1) ).to3() );
 
-        Surface_Of_Revolution.insert_transformed_copy_into( this, [ rows, columns, circle_points ] );         
+        Surface_Of_Revolution.insert_transformed_copy_into( this, [ rows, columns, circle_points ] );
       } }
 
 window.Grid_Sphere = window.classes.Grid_Sphere =
-class Grid_Sphere extends Shape                         // With lattitude / longitude divisions; this means singularities are at 
+class Grid_Sphere extends Shape                         // With lattitude / longitude divisions; this means singularities are at
   { constructor( rows, columns, texture_range )         // the mesh's top and bottom.  Subdivision_Sphere is a better alternative.
       { super( "positions", "normals", "texture_coords" );
         const semi_circle_points = Array( rows ).fill( Vec.of( 0,0,1 ) ).map( (x,i,a) =>
                                     Mat4.rotation( i/(a.length-1) * Math.PI, Vec.of( 0,1,0 ) ).times( x.to4(1) ).to3() );
-        
+
         Surface_Of_Revolution.insert_transformed_copy_into( this, [ rows, columns, semi_circle_points, texture_range ] );
       } }
 
@@ -270,7 +270,7 @@ window.Closed_Cone = window.classes.Closed_Cone =
 class Closed_Cone extends Shape     // Combine a cone tip and a regular polygon to make a closed cone.
   { constructor( rows, columns, texture_range )
       { super( "positions", "normals", "texture_coords" );
-        Cone_Tip          .insert_transformed_copy_into( this, [ rows, columns, texture_range ]);    
+        Cone_Tip          .insert_transformed_copy_into( this, [ rows, columns, texture_range ]);
         Regular_2D_Polygon.insert_transformed_copy_into( this, [ 1, columns ], Mat4.rotation( Math.PI, Vec.of(0, 1, 0) )
                                                                        .times( Mat4.translation([ 0, 0, 1 ]) ) ); } }
 
@@ -289,17 +289,17 @@ class Capped_Cylinder extends Shape                       // Combine a tube and 
 window.Rounded_Capped_Cylinder = window.classes.Rounded_Capped_Cylinder =
 class Rounded_Capped_Cylinder extends Surface_Of_Revolution   // An alternative without three separate sections
   { constructor ( rows, columns, texture_range ) { super( rows, columns, Vec.cast( [0, 0, .5], [1, 0, .5], [1, 0, -.5], [0, 0, -.5] ), texture_range ); } }
-  
-  
+
+
 window.Axis_Arrows = window.classes.Axis_Arrows =
 class Axis_Arrows extends Shape                                   // An axis set with arrows, made out of a lot of various primitives.
 { constructor()
     { super( "positions", "normals", "texture_coords" );
-      var stack = [];       
+      var stack = [];
       Subdivision_Sphere.insert_transformed_copy_into( this, [ 3 ], Mat4.rotation( Math.PI/2, Vec.of( 0,1,0 ) ).times( Mat4.scale([ .25, .25, .25 ]) ) );
       this.drawOneAxis( Mat4.identity(),                                                            [[ .67, 1  ], [ 0,1 ]] );
       this.drawOneAxis( Mat4.rotation(-Math.PI/2, Vec.of(1,0,0)).times( Mat4.scale([  1, -1, 1 ])), [[ .34,.66 ], [ 0,1 ]] );
-      this.drawOneAxis( Mat4.rotation( Math.PI/2, Vec.of(0,1,0)).times( Mat4.scale([ -1,  1, 1 ])), [[  0 ,.33 ], [ 0,1 ]] ); 
+      this.drawOneAxis( Mat4.rotation( Math.PI/2, Vec.of(0,1,0)).times( Mat4.scale([ -1,  1, 1 ])), [[  0 ,.33 ], [ 0,1 ]] );
     }
   drawOneAxis( transform, tex )    // Use a different texture coordinate range for each of the three axes, so they show up differently.
     { Closed_Cone     .insert_transformed_copy_into( this, [ 4, 10, tex ], transform.times( Mat4.translation([   0,   0,  2 ]) ).times( Mat4.scale([ .25, .25, .25 ]) ) );
@@ -312,15 +312,15 @@ class Axis_Arrows extends Shape                                   // An axis set
 
 
 window.Basic_Shader = window.classes.Basic_Shader =
-class Basic_Shader extends Shader             // Subclasses of Shader each store and manage a complete GPU program.  This Shader is 
-{                                             // the simplest example of one.  It samples pixels from colors that are directly assigned 
+class Basic_Shader extends Shader             // Subclasses of Shader each store and manage a complete GPU program.  This Shader is
+{                                             // the simplest example of one.  It samples pixels from colors that are directly assigned
   material() { return { shader: this } }      // to the vertices.  Materials here are minimal, without any settings.
   map_attribute_name_to_buffer_name( name )        // The shader will pull single entries out of the vertex arrays, by their data fields'
     {                                              // names.  Map those names onto the arrays we'll pull them from.  This determines
-                                                   // which kinds of Shapes this Shader is compatible with.  Thanks to this function, 
-                                                   // Vertex buffers in the GPU can get their pointers matched up with pointers to 
+                                                   // which kinds of Shapes this Shader is compatible with.  Thanks to this function,
+                                                   // Vertex buffers in the GPU can get their pointers matched up with pointers to
                                                    // attribute names in the GPU.  Shapes and Shaders can still be compatible even
-                                                   // if some vertex data feilds are unused. 
+                                                   // if some vertex data feilds are unused.
       return { object_space_pos: "positions", color: "colors" }[ name ];      // Use a simple lookup table.
     }
     // Define how to synchronize our JavaScript's variables to the GPU's:
@@ -387,9 +387,9 @@ class Funny_Shader extends Shader         // Simple "procedural" texture shader,
     { return `
         uniform float animation_time;
         void main()
-        { float a = animation_time, u = f_tex_coord.x, v = f_tex_coord.y;   
-                                                                  // Use an arbitrary math function to color in all pixels as a complex                                                                  
-          gl_FragColor = vec4(                                    // function of the UV texture coordintaes of the pixel and of time.  
+        { float a = animation_time, u = f_tex_coord.x, v = f_tex_coord.y;
+                                                                  // Use an arbitrary math function to color in all pixels as a complex
+          gl_FragColor = vec4(                                    // function of the UV texture coordintaes of the pixel and of time.
             2.0 * u * sin(17.0 * u ) + 3.0 * v * sin(11.0 * v ) + 1.0 * sin(13.0 * a),
             3.0 * u * sin(18.0 * u ) + 4.0 * v * sin(12.0 * v ) + 2.0 * sin(14.0 * a),
             4.0 * u * sin(19.0 * u ) + 5.0 * v * sin(13.0 * v ) + 3.0 * sin(15.0 * a),
@@ -400,30 +400,30 @@ class Funny_Shader extends Shader         // Simple "procedural" texture shader,
 
 
 window.Phong_Shader = window.classes.Phong_Shader =
-class Phong_Shader extends Shader          // THE DEFAULT SHADER: This uses the Phong Reflection Model, with optional Gouraud shading. 
-                                           // Wikipedia has good defintions for these concepts.  Subclasses of class Shader each store 
-                                           // and manage a complete GPU program.  This particular one is a big "master shader" meant to 
-                                           // handle all sorts of lighting situations in a configurable way. 
+class Phong_Shader extends Shader          // THE DEFAULT SHADER: This uses the Phong Reflection Model, with optional Gouraud shading.
+                                           // Wikipedia has good defintions for these concepts.  Subclasses of class Shader each store
+                                           // and manage a complete GPU program.  This particular one is a big "master shader" meant to
+                                           // handle all sorts of lighting situations in a configurable way.
                                            // Phong Shading is the act of determining brightness of pixels via vector math.  It compares
                                            // the normal vector at that pixel to the vectors toward the camera and light sources.
           // *** How Shaders Work:
-                                           // The "vertex_glsl_code" string below is code that is sent to the graphics card at runtime, 
-                                           // where on each run it gets compiled and linked there.  Thereafter, all of your calls to draw 
-                                           // shapes will launch the vertex shader program once per vertex in the shape (three times per 
-                                           // triangle), sending results on to the next phase.  The purpose of this vertex shader program 
-                                           // is to calculate the final resting place of vertices in screen coordinates; each vertex 
+                                           // The "vertex_glsl_code" string below is code that is sent to the graphics card at runtime,
+                                           // where on each run it gets compiled and linked there.  Thereafter, all of your calls to draw
+                                           // shapes will launch the vertex shader program once per vertex in the shape (three times per
+                                           // triangle), sending results on to the next phase.  The purpose of this vertex shader program
+                                           // is to calculate the final resting place of vertices in screen coordinates; each vertex
                                            // starts out in local object coordinates and then undergoes a matrix transform to get there.
                                            //
-                                           // Likewise, the "fragment_glsl_code" string is used as the Fragment Shader program, which gets 
-                                           // sent to the graphics card at runtime.  The fragment shader runs once all the vertices in a 
-                                           // triangle / element finish their vertex shader programs, and thus have finished finding out 
-                                           // where they land on the screen.  The fragment shader fills in (shades) every pixel (fragment) 
-                                           // overlapping where the triangle landed.  It retrieves different values (such as vectors) that 
-                                           // are stored at three extreme points of the triangle, and then interpolates the values weighted 
+                                           // Likewise, the "fragment_glsl_code" string is used as the Fragment Shader program, which gets
+                                           // sent to the graphics card at runtime.  The fragment shader runs once all the vertices in a
+                                           // triangle / element finish their vertex shader programs, and thus have finished finding out
+                                           // where they land on the screen.  The fragment shader fills in (shades) every pixel (fragment)
+                                           // overlapping where the triangle landed.  It retrieves different values (such as vectors) that
+                                           // are stored at three extreme points of the triangle, and then interpolates the values weighted
                                            // by the pixel's proximity to each extreme point, using them in formulas to determine color.
-                                           // The fragment colors may or may not become final pixel colors; there could already be other 
-                                           // triangles' fragments occupying the same pixels.  The Z-Buffer test is applied to see if the 
-                                           // new triangle is closer to the camera, and even if so, blending settings may interpolate some 
+                                           // The fragment colors may or may not become final pixel colors; there could already be other
+                                           // triangles' fragments occupying the same pixels.  The Z-Buffer test is applied to see if the
+                                           // new triangle is closer to the camera, and even if so, blending settings may interpolate some
                                            // of the old color into the result.  Finally, an image is displayed onscreen.
 { material( color, properties )     // Define an internal class "Material" that stores the standard settings found in Phong lighting.
   { return new class Material       // Possible properties: ambient, diffusivity, specularity, smoothness, gouraud, texture.
@@ -450,12 +450,12 @@ class Phong_Shader extends Shader          // THE DEFAULT SHADER: This uses the 
         uniform float ambient, diffusivity, specularity, smoothness, animation_time, attenuation_factor[N_LIGHTS];
         uniform bool GOURAUD, COLOR_NORMALS, USE_TEXTURE;               // Flags for alternate shading methods
         uniform vec4 lightPosition[N_LIGHTS], lightColor[N_LIGHTS], shapeColor;
-        varying vec3 N, E;                    // Specifier "varying" means a variable's final value will be passed from the vertex shader 
-        varying vec2 f_tex_coord;             // on to the next phase (fragment shader), then interpolated per-fragment, weighted by the 
+        varying vec3 N, E;                    // Specifier "varying" means a variable's final value will be passed from the vertex shader
+        varying vec2 f_tex_coord;             // on to the next phase (fragment shader), then interpolated per-fragment, weighted by the
         varying vec4 VERTEX_COLOR;            // pixel fragment's proximity to each of the 3 vertices (barycentric interpolation).
         varying vec3 L[N_LIGHTS], H[N_LIGHTS];
         varying float dist[N_LIGHTS];
-        
+
         vec3 phong_model_lights( vec3 N )
           { vec3 result = vec3(0.0);
             for(int i = 0; i < N_LIGHTS; i++)
@@ -482,9 +482,9 @@ class Phong_Shader extends Shader          // THE DEFAULT SHADER: This uses the 
         { gl_Position = projection_camera_model_transform * vec4(object_space_pos, 1.0);     // The vertex's final resting place (in NDCS).
           N = normalize( inverse_transpose_modelview * normal );                             // The final normal vector in screen space.
           f_tex_coord = tex_coord;                                         // Directly use original texture coords and interpolate between.
-          
+
           if( COLOR_NORMALS )                                     // Bypass all lighting code if we're lighting up vertices some other way.
-          { VERTEX_COLOR = vec4( N[0] > 0.0 ? N[0] : sin( animation_time * 3.0   ) * -N[0],             // In "normals" mode, 
+          { VERTEX_COLOR = vec4( N[0] > 0.0 ? N[0] : sin( animation_time * 3.0   ) * -N[0],             // In "normals" mode,
                                  N[1] > 0.0 ? N[1] : sin( animation_time * 15.0  ) * -N[1],             // rgb color = xyz quantity.
                                  N[2] > 0.0 ? N[2] : sin( animation_time * 45.0  ) * -N[2] , 1.0 );     // Flash if it's negative.
             return;
@@ -497,34 +497,34 @@ class Phong_Shader extends Shader          // THE DEFAULT SHADER: This uses the 
           {            // Light positions use homogeneous coords.  Use w = 0 for a directional light source -- a vector instead of a point.
             L[i] = normalize( ( camera_transform * lightPosition[i] ).xyz - lightPosition[i].w * screen_space_pos );
             H[i] = normalize( L[i] + E );
-            
+
             // Is it a point light source?  Calculate the distance to it from the object.  Otherwise use some arbitrary distance.
             dist[i]  = lightPosition[i].w > 0.0 ? distance((camera_transform * lightPosition[i]).xyz, screen_space_pos)
                                                 : distance( attenuation_factor[i] * -lightPosition[i].xyz, object_space_pos.xyz );
           }
 
-          if( GOURAUD )                   // Gouraud shading mode?  If so, finalize the whole color calculation here in the vertex shader, 
-          {                               // one per vertex, before we even break it down to pixels in the fragment shader.   As opposed 
+          if( GOURAUD )                   // Gouraud shading mode?  If so, finalize the whole color calculation here in the vertex shader,
+          {                               // one per vertex, before we even break it down to pixels in the fragment shader.   As opposed
                                           // to Smooth "Phong" Shading, where we *do* wait to calculate final color until the next shader.
             VERTEX_COLOR      = vec4( shapeColor.xyz * ambient, shapeColor.w);
             VERTEX_COLOR.xyz += phong_model_lights( N );
           }
         }`;
     }
-  fragment_glsl_code()           // ********* FRAGMENT SHADER ********* 
+  fragment_glsl_code()           // ********* FRAGMENT SHADER *********
     {                            // A fragment is a pixel that's overlapped by the current triangle.
                                  // Fragments affect the final image or get discarded due to depth.
       return `
         uniform sampler2D texture;
         void main()
         { if( GOURAUD || COLOR_NORMALS )    // Do smooth "Phong" shading unless options like "Gouraud mode" are wanted instead.
-          { gl_FragColor = VERTEX_COLOR;    // Otherwise, we already have final colors to smear (interpolate) across vertices.            
+          { gl_FragColor = VERTEX_COLOR;    // Otherwise, we already have final colors to smear (interpolate) across vertices.
             return;
           }                                 // If we get this far, calculate Smooth "Phong" Shading as opposed to Gouraud Shading.
                                             // Phong shading is not to be confused with the Phong Reflection Model.
           vec4 tex_color = texture2D( texture, f_tex_coord );                         // Sample the texture image in the correct place.
                                                                                       // Compute an initial (ambient) color:
-          if( USE_TEXTURE ) gl_FragColor = vec4( ( tex_color.xyz + shapeColor.xyz ) * ambient, shapeColor.w * tex_color.w ); 
+          if( USE_TEXTURE ) gl_FragColor = vec4( ( tex_color.xyz + shapeColor.xyz ) * ambient, shapeColor.w * tex_color.w );
           else gl_FragColor = vec4( shapeColor.xyz * ambient, shapeColor.w );
           gl_FragColor.xyz += phong_model_lights( N );                     // Compute the final color with contributions from lights.
         }`;
@@ -535,11 +535,11 @@ class Phong_Shader extends Shader          // THE DEFAULT SHADER: This uses the 
       this.update_matrices( g_state, model_transform, gpu, gl );
       gl.uniform1f ( gpu.animation_time_loc, g_state.animation_time / 1000 );
 
-      if( g_state.gouraud === undefined ) { g_state.gouraud = g_state.color_normals = false; }    // Keep the flags seen by the shader 
-      gl.uniform1i( gpu.GOURAUD_loc,        g_state.gouraud || material.gouraud );                // program up-to-date and make sure 
+      if( g_state.gouraud === undefined ) { g_state.gouraud = g_state.color_normals = false; }    // Keep the flags seen by the shader
+      gl.uniform1i( gpu.GOURAUD_loc,        g_state.gouraud || material.gouraud );                // program up-to-date and make sure
       gl.uniform1i( gpu.COLOR_NORMALS_loc,  g_state.color_normals );                              // they are declared.
 
-      gl.uniform4fv( gpu.shapeColor_loc,     material.color       );    // Send the desired shape-wide material qualities 
+      gl.uniform4fv( gpu.shapeColor_loc,     material.color       );    // Send the desired shape-wide material qualities
       gl.uniform1f ( gpu.ambient_loc,        material.ambient     );    // to the graphics card, where they will tweak the
       gl.uniform1f ( gpu.diffusivity_loc,    material.diffusivity );    // Phong lighting formula.
       gl.uniform1f ( gpu.specularity_loc,    material.specularity );
@@ -573,17 +573,17 @@ class Phong_Shader extends Shader          // THE DEFAULT SHADER: This uses the 
                                                                   // the products we'll need of the of the three special matrices and just
                                                                   // cache and send those.  They will be the same throughout this draw
                                                                   // call, and thus across each instance of the vertex shader.
-                                                                  // Transpose them since the GPU expects matrices as column-major arrays.                                  
+                                                                  // Transpose them since the GPU expects matrices as column-major arrays.
       gl.uniformMatrix4fv( gpu.camera_transform_loc,                  false, Mat.flatten_2D_to_1D(     C .transposed() ) );
       gl.uniformMatrix4fv( gpu.camera_model_transform_loc,            false, Mat.flatten_2D_to_1D(     CM.transposed() ) );
       gl.uniformMatrix4fv( gpu.projection_camera_model_transform_loc, false, Mat.flatten_2D_to_1D(    PCM.transposed() ) );
-      gl.uniformMatrix3fv( gpu.inverse_transpose_modelview_loc,       false, Mat.flatten_2D_to_1D( inv_CM              ) );       
+      gl.uniformMatrix3fv( gpu.inverse_transpose_modelview_loc,       false, Mat.flatten_2D_to_1D( inv_CM              ) );
     }
 }
 
 
 window.Movement_Controls = window.classes.Movement_Controls =
-class Movement_Controls extends Scene_Component    // Movement_Controls is a Scene_Component that can be attached to a canvas, like any 
+class Movement_Controls extends Scene_Component    // Movement_Controls is a Scene_Component that can be attached to a canvas, like any
 {                                                  // other Scene, but it is a Secondary Scene Component -- meant to stack alongside other
                                                    // scenes.  Rather than drawing anything it embeds both first-person and third-person
                                                    // style controls into the website.  These can be uesd to manually move your camera or
@@ -603,16 +603,16 @@ class Movement_Controls extends Scene_Component    // Movement_Controls is a Sce
       context.globals.has_controls = true;
 
       [ this.radians_per_frame, this.meters_per_frame, this.speed_multiplier ] = [ 1/200, 20, 1 ];
-      
+
       // *** Mouse controls: ***
       this.mouse = { "from_center": Vec.of( 0,0 ) };                           // Measure mouse steering, for rotating the flyaround camera:
-      const mouse_position = ( e, rect = canvas.getBoundingClientRect() ) => 
+      const mouse_position = ( e, rect = canvas.getBoundingClientRect() ) =>
                                    Vec.of( e.clientX - (rect.left + rect.right)/2, e.clientY - (rect.bottom + rect.top)/2 );
                                         // Set up mouse response.  The last one stops us from reacting if the mouse leaves the canvas.
       document.addEventListener( "mouseup",   e => { this.mouse.anchor = undefined; } );
       canvas  .addEventListener( "mousedown", e => { e.preventDefault(); this.mouse.anchor      = mouse_position(e); } );
       canvas  .addEventListener( "mousemove", e => { e.preventDefault(); this.mouse.from_center = mouse_position(e); } );
-      canvas  .addEventListener( "mouseout",  e => { if( !this.mouse.anchor ) this.mouse.from_center.scale(0) } );  
+      canvas  .addEventListener( "mouseout",  e => { if( !this.mouse.anchor ) this.mouse.from_center.scale(0) } );
     }
   show_explanation( document_element ) { }
   make_control_panel()                                                        // This function of a scene sets up its keyboard shortcuts.
@@ -623,7 +623,7 @@ class Movement_Controls extends Scene_Component    // Movement_Controls is a Sce
       this.key_triggered_button( "Left",   [ "a" ], () => this.thrust[0] =  1, undefined, () => this.thrust[0] = 0 );
       this.key_triggered_button( "Back",   [ "s" ], () => this.thrust[2] = -1, undefined, () => this.thrust[2] = 0 );
       this.key_triggered_button( "Right",  [ "d" ], () => this.thrust[0] = -1, undefined, () => this.thrust[0] = 0 );  this.new_line();
-      this.key_triggered_button( "Down",   [ "z" ], () => this.thrust[1] =  1, undefined, () => this.thrust[1] = 0 ); 
+      this.key_triggered_button( "Down",   [ "z" ], () => this.thrust[1] =  1, undefined, () => this.thrust[1] = 0 );
 
       const speed_controls = this.control_panel.appendChild( document.createElement( "span" ) );
       speed_controls.style.margin = "30px";
@@ -635,14 +635,14 @@ class Movement_Controls extends Scene_Component    // Movement_Controls is a Sce
       this.key_triggered_button( "Roll right", [ "." ], () => this.roll = -1, undefined, () => this.roll = 0 );  this.new_line();
       this.key_triggered_button( "(Un)freeze mouse look around", [ "f" ], () => this.look_around_locked ^=  1, "green" );
       this.new_line();
-      this.live_string( box => box.textContent = "Position: " + this.pos[0].toFixed(2) + ", " + this.pos[1].toFixed(2) 
+      this.live_string( box => box.textContent = "Position: " + this.pos[0].toFixed(2) + ", " + this.pos[1].toFixed(2)
                                                        + ", " + this.pos[2].toFixed(2) );
       this.new_line();        // The facing directions are actually affected by the left hand rule:
       this.live_string( box => box.textContent = "Facing: " + ( ( this.z_axis[0] > 0 ? "West " : "East ")
                    + ( this.z_axis[1] > 0 ? "Down " : "Up " ) + ( this.z_axis[2] > 0 ? "North" : "South" ) ) );
-      this.new_line();     
+      this.new_line();
       this.key_triggered_button( "Go to world origin", [ "r" ], () => this.target().set_identity( 4,4 ), "orange" );  this.new_line();
-      this.key_triggered_button( "Attach to global camera", [ "Shift", "R" ], () => 
+      this.key_triggered_button( "Attach to global camera", [ "Shift", "R" ], () =>
                                           globals.movement_controls_target = () => globals.graphics_state.camera_transform, "blue" );
       this.new_line();
     }
@@ -651,10 +651,10 @@ class Movement_Controls extends Scene_Component    // Movement_Controls is a Sce
       const do_operation = this.target()[ this.will_invert ? "pre_multiply" : "post_multiply" ].bind( this.target() );
                                                                       // Compare mouse's location to all four corners of a dead box.
       const offsets_from_dead_box = { plus: [ this.mouse.from_center[0] + leeway, this.mouse.from_center[1] + leeway ],
-                                     minus: [ this.mouse.from_center[0] - leeway, this.mouse.from_center[1] - leeway ] }; 
+                                     minus: [ this.mouse.from_center[0] - leeway, this.mouse.from_center[1] - leeway ] };
                 // Apply a camera rotation movement, but only when the mouse is past a minimum distance (leeway) from the canvas's center:
-      if( !this.look_around_locked ) 
-        for( let i = 0; i < 2; i++ )      // Steer according to "mouse_from_center" vector, but don't 
+      if( !this.look_around_locked )
+        for( let i = 0; i < 2; i++ )      // Steer according to "mouse_from_center" vector, but don't
         {                                 // start increasing until outside a leeway window from the center.
           let o = offsets_from_dead_box,                                          // The &&'s in the next line might zero the vectors out:
             velocity = ( ( o.minus[i] > 0 && o.minus[i] ) || ( o.plus[i] < 0 && o.plus[i] ) ) * radians_per_frame;
@@ -677,47 +677,47 @@ class Movement_Controls extends Scene_Component    // Movement_Controls is a Sce
     { const m = this.speed_multiplier * this. meters_per_frame,
             r = this.speed_multiplier * this.radians_per_frame;
       this.first_person_flyaround( dt * r, dt * m );     // Do first-person.  Scale the normal camera aiming speed by dt for smoothness.
-      if( this.mouse.anchor )                            // Also apply third-person "arcball" camera mode if a mouse drag is occurring.  
-        this.third_person_arcball( dt * r);           
-      
+      if( this.mouse.anchor )                            // Also apply third-person "arcball" camera mode if a mouse drag is occurring.
+        this.third_person_arcball( dt * r);
+
       const inv = Mat4.inverse( this.target() );
       this.pos = inv.times( Vec.of( 0,0,0,1 ) ); this.z_axis = inv.times( Vec.of( 0,0,1,0 ) );      // Log some values.
     }
 }
 
 window.Global_Info_Table = window.classes.Global_Info_Table =
-class Global_Info_Table extends Scene_Component                 // A class that just toggles, monitors, and reports some 
+class Global_Info_Table extends Scene_Component                 // A class that just toggles, monitors, and reports some
 { make_control_panel()                                          // global values via its control panel.
     { const globals = this.globals;
       globals.has_info_table = true;
       this.key_triggered_button( "(Un)pause animation", ["Alt", "a"], function() { globals.animate ^= 1; } ); this.new_line();
       this.live_string( box => { box.textContent = "Animation Time: " + ( globals.graphics_state.animation_time/1000 ).toFixed(3) + "s" } );
       this.live_string( box => { box.textContent = globals.animate ? " " : " (paused)" } );  this.new_line();
-      this.key_triggered_button( "Gouraud shading",     ["Alt", "g"], function() { globals.graphics_state.gouraud       ^= 1;         } ); 
+      this.key_triggered_button( "Gouraud shading",     ["Alt", "g"], function() { globals.graphics_state.gouraud       ^= 1;         } );
       this.new_line();
-      this.key_triggered_button( "Normals shading",     ["Alt", "n"], function() { globals.graphics_state.color_normals ^= 1;         } ); 
+      this.key_triggered_button( "Normals shading",     ["Alt", "n"], function() { globals.graphics_state.color_normals ^= 1;         } );
       this.new_line();
-      
+
       const label = this.control_panel.appendChild( document.createElement( "p" ) );
       label.style = "align:center";
       label.innerHTML = "A shared scratchpad is <br> accessible to all Scene_Components. <br> Navigate its values here:";
 
-      const show_object = ( element, obj = globals ) => 
+      const show_object = ( element, obj = globals ) =>
       { if( this.box ) this.box.innerHTML = "";
         else this.box = element.appendChild( Object.assign( document.createElement( "div" ), { style: "overflow:auto; width: 200px" } ) );
         if( obj !== globals )
-          this.box.appendChild( Object.assign( document.createElement( "div" ), { className:"link", innerText: "(back to globals)", 
+          this.box.appendChild( Object.assign( document.createElement( "div" ), { className:"link", innerText: "(back to globals)",
                                                onmousedown: () => this.current_object = globals } ) )
         if( obj.to_string ) return this.box.appendChild( Object.assign( document.createElement( "div" ), { innerText: obj.to_string() } ) );
         for( let [key,val] of Object.entries( obj ) )
-        { if( typeof( val ) == "object" ) 
-            this.box.appendChild( Object.assign( document.createElement( "a" ), { className:"link", innerText: key, 
+        { if( typeof( val ) == "object" )
+            this.box.appendChild( Object.assign( document.createElement( "a" ), { className:"link", innerText: key,
                                                  onmousedown: () => this.current_object = val } ) )
           else
             this.box.appendChild( Object.assign( document.createElement( "span" ), { innerText: key + ": " + val.toString() } ) );
           this.box.appendChild( document.createElement( "br" ) );
         }
       }
-      this.live_string( box => show_object( box, this.current_object ) );      
+      this.live_string( box => show_object( box, this.current_object ) );
     }
 }
